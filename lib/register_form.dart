@@ -49,7 +49,6 @@ class _RegisterFormState extends State<RegisterForm> {
         body: jsonEncode({'username': nom, 'password': motDePasse}),
       );
       final donnees = jsonDecode(reponse.body);
-
       if (!mounted) return;
       if (reponse.statusCode == 200 && donnees['success'] == true) {
         final messager = ScaffoldMessenger.of(context);

@@ -16,6 +16,7 @@ class ListeLivres extends StatefulWidget {
 class _ListeLivresState extends State<ListeLivres> {
   List<dynamic> livres = [];
   String recherche = '';
+  String filtre = 'Titre';
   String erreur = '';
   bool chargement = true;
 
@@ -126,6 +127,18 @@ class _ListeLivresState extends State<ListeLivres> {
       return texte.contains(recherche.toLowerCase());
     }).toList();
 
+    if (filtre == 'Titre') {
+      livresAffiches.sort((a, b) => '${a['titre']}'.compareTo('${b['titre']}'));
+    } else if (filtre == 'Auteur') {
+      livresAffiches.sort(
+        (a, b) => '${a['auteur']}'.compareTo('${b['auteur']}'),
+      );
+    } else if (filtre == 'Année récente') {
+      livresAffiches.sort((a, b) => '${b['annee']}'.compareTo('${a['annee']}'));
+    } else {
+      livresAffiches.sort((a, b) => '${a['annee']}'.compareTo('${b['annee']}'));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Maktabti'),
@@ -148,13 +161,69 @@ class _ListeLivresState extends State<ListeLivres> {
         children: [
           Padding(
             padding: const EdgeInsets.all(12),
-            child: TextField(
-              decoration: const InputDecoration(
-                labelText: 'Rechercher un livre',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (texte) => setState(() => recherche = texte),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Rechercher un livre',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (texte) => setState(() => recherche = texte),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                SizedBox(
+                  width: 175,
+                  child: DropdownButtonFormField<String>(
+                    initialValue: filtre,
+                    isExpanded: true,
+                    decoration: const InputDecoration(
+                      labelText: 'Trier par',
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Titre',
+                        child: Text(
+                          'Titre',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Auteur',
+                        child: Text(
+                          'Auteur',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Année récente',
+                        child: Text(
+                          'Année récente',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Année ancienne',
+                        child: Text(
+                          'Année ancienne',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                    onChanged: (valeur) {
+                      if (valeur != null) setState(() => filtre = valeur);
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
           Expanded(
@@ -197,7 +266,7 @@ class _ListeLivresState extends State<ListeLivres> {
                         child: ListTile(
                           leading: const Icon(Icons.book),
                           title: Text('${livre['titre']}'),
-                          subtitle: Text('${livre['auteur']}'),
+                          subtitle: Text('${livre['auteur']} - ${livre['annee']}'),
                           onTap: () => Navigator.pushNamed(
                             context,
                             '/details',

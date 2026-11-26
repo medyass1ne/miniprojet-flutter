@@ -22,9 +22,9 @@ function json_input() {
 
 try {
     $pdo = new PDO(
-        'mysql:host=localhost;port=3307;dbname=mini_projet_flutter;charset=utf8mb4',
+        'mysql:host=localhost;port=3306;dbname=mini_projet_flutter;charset=utf8mb4',
         'root',
-        '',
+        'root',
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
